@@ -1,0 +1,148 @@
+{%extends 'main/base.html'%}
+{% block home %}active{% endblock %}
+{%block contant%}
+<!-- Modal -->
+{% if not user.is_authenticated %}
+<script>
+    $(document).ready(function(){
+        $("#myModal").modal('show');
+    });
+</script>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/user/login" method="post">{% csrf_token %}
+                    <div class="form-group">
+                        <label for="exampleInputEmail1"class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" name="email">
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" name="password">
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        Don't have account, <a href="/user/register"> Register Here...</a>
+                    </div>
+                    <div class="form-group">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{%load static%}
+<style type="text/css">
+.img {
+    width: 100%;
+}
+
+.h1 {
+    color: #7CB5EC;
+    font-size: 6.5vw;
+}
+
+.h2 {
+    color: #F7A35C;
+    font-size: 4vw;
+}
+
+.h3 {
+    color: #90ED7D;
+    font-size: 4vw;
+}
+
+.h5 {
+    color: #999;
+    font-size: 1.3vw;
+}
+
+body {
+    margin-bottom: 100px;
+}
+}
+
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <!-- ##################################### -->
+        <div class="container-fluid col-12 box box1">
+            <div class="row">
+                <div class="col-12 col-md-7 mt-md-5 order-2 order-md-1">
+                    <div class="d-block d-md-none pr-5 pt-5">
+                        <h1 style="color: #7CB5EC;">Make Your Online Diary</h1>
+                        <h6 class="mb-4 pr-5" style="color: #999;" class="mt-3">“AN WEB ENVIRONMENT THAT HELPS PEOPLES TO MANAGE THIRE PERSNOL DIARY, MANAGE ACCOUNT, CREATE TODO LIST, AND TRACK THEIR STUDY.”</h6>
+                    </div>
+                    <img class="img" src="{%static 'main/image/diary.png'%}">
+                </div>
+                <div class="col-md-5 mt-md-5 mt-5 py-md-5 pr-md-4 pl-md-0  text-right order-1 order-md-2 d-md-block d-none">
+                    <h1 class="h1">Make Your Online Diary</h1>
+                    <h5 class="h5 mt-3" style="padding-left: 15%;">“AN WEB ENVIRONMENT THAT HELPS PEOPLES TO CREATE PERSNOL ONLINE DIARY, MANAGE ACCOUNT, CREATE TODO LIST, AND TRACK THEIR STUDY.”</h5>
+                </div>
+            </div>
+        </div>
+        <!-- ##################################### -->
+        <div class="container-fluid col-12 box box2">
+            <div class="row">
+                <div class="col-md-5 col-12 px-md-5 px-md-5 px-md-5 mt-md-5 text-left order-2 order-md-2 d-md-block d-none">
+                    <h2 class="h2">Create Your ToDo List</h2>
+                    <h5 class="h5 mr-5">“MANAGE YOUR DAILY TASK THAT YOU CAN MANAGE ALL YOUR WORK EASYLY AND MORE EFFICIENTLY.”</h5>
+                </div>
+                <div class="col-12 col-md-7 p-md-5 p-4 order-1 order-md-2 b4">
+                    <div class="d-block d-md-none text-right">
+                        <h2 style="color: #F7A35C;">Create Your ToDo List</h2>
+                        <h6 class="mb-4" style="color: #999;" class="">“MANAGE YOUR DAILY TASK THAT YOU CAN MANAGE ALL YOUR WORK EASYLY AND MORE EFFICIENTLY”</h6>
+                    </div>
+                    <img class="img" src="{%static 'main/image/todo.png'%}">
+                </div>
+            </div>
+        </div>
+        <!-- ##################################### -->
+        <div class="container-fluid col-12 box box3">
+            <div class="row">
+                <div class="col-12 col-md-7 order-2 order-md-1">
+                    <div class="text-left">
+                        <h2 class="d-block d-md-none" style="color: #90ED7D;">Manage Your Money Transections</h2>
+                        <h6 class="d-block d-md-none mb-4" style="color: #999;" class="">“MANAGE YOUR All MONEY TRANSECTIONS.”</h6>
+                    </div>
+                    <img class="img" src="{%static 'main/image/account.png'%}">
+                </div>
+                <div class="col-md-5 p-md-5 p-4 text-right order-1 order-md-2 d-md-block d-none">
+                    <h2 class="h3">Manage Your Money Transections</h2>
+                    <h5 class="h5 ml-5">“MANAGE YOUR All MONEY TRANSECTIONS.”</h5>
+                </div>
+            </div>
+        </div>
+        <!-- ##################################### -->
+        <!-- <div class="container-fluid col-12 box box4">
+            <div class="row">
+                <div class="col-md-5 p-md-5 p-4 mt-md-5 text-left order-2 order-md-2 d-md-block d-none">
+                    <h2 class="h2">Study Management</h2>
+                    <h5 class="h5 mr-5">“MANAGE YOUR ENGINEERING STUDY AT THE TIME OF FINAL EXAMINATION EASYLY AND CALCULATED.”</h5>
+                </div>
+                <div class="col-12 col-md-7 order-1 order-md-2 b4">
+                    <div class="d-block d-md-none text-right" >
+                        <h2 style="color: #F7A35C;">Study Management</h2>
+                        <h6 class="mb-4" style="color: #999;" class="">“MANAGE YOUR ENGINEERING STUDY AT THE TIME OF FINAL EXAMINATION EASYLY AND CALCULATED.”</h6>
+                    </div>
+                    <img class="img" src="{%static 'main/image/study.png'%}">
+                </div>
+            </div>
+        </div> -->
+        <!-- ##################################### -->
+        <div class="col-12 order-12 mt-5 box box5">
+            <div class="text-center">
+                <a class="btn btn-primary btn-lg" href="/user/register" style="box-shadow: 0px 4px 10px #666;">Gatteing Started <span class="fa fa-arrow-right"></span></a>
+            </div>
+        </div>
+        <!-- ##################################### -->
+    </div>
+</div>
+{%endblock%}

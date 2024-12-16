@@ -1,0 +1,174 @@
+{%extends 'placement/placement_base.html'%}
+{% block newJobs %}active{% endblock %}
+{% block newJobs2 %}active{% endblock %}
+{%block contant%}
+<style type="text/css">
+body {
+    background: #EEE;
+}
+.myImg {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%)
+}
+</style>
+<div class="container-fluid px-4"  style="overflow-y: scroll; height:100%;">
+    <div class="row  mb-5">
+        <div class="col-12 text-center my-md-4 my-2">
+            <h1><b>New Jobs</b></h1>
+        </div>
+        {%for job in Jobs%}
+        <div class="col-md-4 mb-3 px-2 d-flex align-items-stretch">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-4 ps-3 ps-3 py-3 pe-md-0 pe-3 text-center frame">
+                        <img src="{{job.company_id.icon_url}}" class="img-responsive rounded-start myImg" width="100%">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><b>{{job.position}}</b></h5>
+                            <h6 class="card-text">@{{job.company_id.name}}</h6>
+                            <p class="card-text">
+                                Location : {{job.location}} <br>
+                                Posted On : <small class="text-muted">{{job.date_updated}}</small>
+                            </p>
+                            <button class="btn btn-primary" onclick="showMore({{job.id}})">More</button>
+                            <a class="btn btn-success" href="{{job.link}}" target="_blank" role="button">Apply Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 text-end">                                
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <img id="logoModel" src="https://i.pinimg.com/564x/39/21/6d/39216d73519bca962bd4a01f3e8f4a4b.jpg" class="img-responsive rounded-start myImg" width="100%">
+                                    </div>
+                                    <div class="col-12">
+                                        <h5 class="pt-md-4"><b id="positionModel">Backend Developer</b></h5>
+                                        <h6 id="companyModel">@Google</h6>
+                                        <p>
+                                            Location : <span id="locationModel">Hyderabad</span> <br>
+                                            Posted On : <small class="text-muted" id="dateModel">Dec. 18, 2022, 12:09 a.m.</small>
+                                        </p>
+                                    </div>
+                                </div>                                  
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <h5><b>Salary Structure</b></h5>
+                                <table class="table" id="tableModel">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="d-none d-md-table-cell">#</th>
+                                            <th scope="col">Position</th>
+                                            <th scope="col">Country</th>
+                                            <th scope="col" class="d-none d-md-table-cell">Base</th>
+                                            <th scope="col" class="d-none d-md-table-cell">Bonus</th>
+                                            <th scope="col" class="d-none d-md-table-cell">Stocks</th>
+                                            <th scope="col" class="d-table-cell d-md-none">Salary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Mark</td>
+                                            <td>Otto</td>
+                                            <td>@mdo</td>
+                                            <td>@mdo</td>
+                                            <td>@mdo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                    <a id="careerModel" class="btn btn-primary" href="http://127.0.0.1:8080/placement/addNew" target="_blank" role="button">Career Page</a>
+                    <a id="applyModel" class="btn btn-success" href="http://127.0.0.1:8080/placement/addNew" target="_blank" role="button">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function showMore(id) {
+        var id = id;
+
+        var xmlhttp = new XMLHttpRequest();    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) { // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.responseText);
+                    
+                    $('#exampleModal').modal('show'); 
+                    $('#positionModel').html(data['position']);
+                    $('#companyModel').html('@'+data['company']);
+                    $('#locationModel').html(data['location']);
+                    $('#dateModel').html(Date(data['date']));
+                    $("#logoModel").attr("src",data['logo']);
+                    $("#careerModel").attr("href",data['career_link']);
+                    $("#applyModel").attr("href",data['job_link']);
+                    showSalaries(data['company_id']);                 
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/getJobData?job_id=" + id, true);
+        xmlhttp.send(); 
+    }
+
+    function showSalaries(id) {
+        var id = id;
+
+        var xmlhttp = new XMLHttpRequest();    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) { 
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.responseText);
+                    $('#tableModel').find('tbody').html('');
+                    for (var i = 0; i < data['length']; i++){
+                      var salary = data['salaryList'][i];
+                      $('#tableModel').find('tbody').append('<tr>\
+                              <th scope="row" class="d-none d-md-table-cell">'+ (i+1) +'</th>\
+                              <td>'+ salary["position"] +'</td>\
+                              <td>'+ salary["country"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["base"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["bonus"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["stock"] +'</td>\
+                              <td class="d-md-none d-table-cell">Base : '+ salary["base"] + '<br>Bonus : ' + salary["bonus"] + '<br>Stocks : ' + salary["stock"] + '</td>\
+                            </tr>'
+                      );
+                    }
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/getSalary?company_id=" + id, true);
+        xmlhttp.send(); 
+    }
+
+</script>
+{%endblock%}

@@ -1,0 +1,266 @@
+{%extends 'placement/placement_base.html'%}
+{% block savedCompany %}active{% endblock %}
+{% block savedCompany2 %}active{% endblock %}
+{%block contant%}
+
+<style type="text/css">
+body {
+    background: #EEE;
+}
+</style>
+
+<div class="container-fluid px-4"  style="overflow-y: scroll; height:100%;">
+    <div class="row">
+        <div class="col-12 text-center mt-md-4 mt-2">
+            <h1><b>Saved Companies List</b></h1>
+        </div>
+        <div class="col-12">
+            <div class="my-3 p-3 pb-2 bg-body rounded shadow-sm">
+                <table class="table mt-2 " id = 'myTable'>
+                    <thead>
+                        <tr>
+                            <th scope="col" class="d-md-table-cell d-none">#</th>
+                            <th scope="col">Company</th>
+                            <th scope="col" class="d-md-table-cell d-none">Salaries</th>
+                            <th scope="col">Unsave</th>
+                            <th scope="col" class="d-md-table-cell d-none">Last Open</th>
+                            <th scope="col" class="d-md-table-cell d-none">Career</th>
+                            <th scope="col" class="d-md-none d-table-cell">Others</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {%for company, salaryCount in SavedCompany%}
+                        <tr class="table-light">
+                            <th scope="row">
+                                <img src="{{company.company_id.icon_url}}" alt="" width="50" class="mt-2 p-0">
+                                <strong class="d-block d-md-none text-gray-dark pt-2">{{company.company_id.name}}</strong>
+                                <p class="d-block d-md-none small lh-sm text-dark">Last Open : <span class="text-muted">{{company.last_open}}</span></p>
+                            </th>
+                            <td class="d-md-block d-none">
+                                <div>
+                                    <strong class="text-gray-dark">{{company.company_id.name}}</strong>
+                                    <p class="small lh-sm text-muted">{{company.company_id.desc}}</p>
+                                </div>
+                            </td>
+                            <td class="d-md-table-cell d-none">
+                              <div class="text-center">
+                                <button class="btn btn-sm btn-primary position-relative mt-2" type="button" onclick="showSalaries({{company.company_id.id}})" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                   {{salaryCount}}
+                                  </span>
+                                  Show
+                                </button>
+                              </div>
+                            </td>
+                            <td>
+                                <div class="mt-2 text-center">
+                                    <i class="fa fa-bookmark fa-lg color-primary" aria-hidden="true" onclick="saveCompany({{company.company_id.id}}, this)"></i>    
+                                </div>
+                            </td>
+                            <td class="d-md-table-cell d-none">
+                                <p class="small lh-sm text-muted">{{company.last_open}}</p>
+                            </td>
+                            <td class="d-md-table-cell d-none">
+                                <strong class="d-block text-gray-dark mt-2"><a target="_blank" onclick="updateTime({{company.company_id.id}})" href="{{company.company_id.link}}">Open</a></strong>
+                            </td>
+                            <td class="d-md-none d-table-cell">
+                                <div class="text-center">
+                                  <button class="btn btn-sm btn-primary position-relative mt-2" type="button" onclick="showSalaries({{company.company_id.id}})" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                     {{salaryCount}}
+                                    </span>
+                                    Salary
+                                  </button>
+                                </div>
+                                <div class="text-center mt-2">
+                                  <a class="btn btn-sm btn-success" target="_blank" onclick="updateTime({{company.company_id.id}})" href="{{company.company_id.link}}"> Career</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {%endfor%}
+                    </tbody>
+
+                </table>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Warning</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                            <p id='companyID' hidden></p>
+                            <p id='rowNo' hidden></p>
+                            <p>Are you sure want to remove <b id="modelBodyText">companyName</b> from saved companies list ?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancal</button>
+                        <button type="button" id ="okRemove" onclick="removeFromSaved()" class="btn btn-danger">Remove From Saved</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Salary Modal -->
+                <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel2">Salaries in <b id="companyNameSalary">Company</b></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        
+                        <table class="table" id="salariesTable">
+                          <thead class="table-dark">
+                            <tr>
+                              <th scope="col" class="d-none d-md-table-cell">#</th>
+                              <th scope="col">Position</th>
+                              <th scope="col">Country</th>
+                              <th scope="col" class="d-none d-md-table-cell">Base</th>
+                              <th scope="col" class="d-none d-md-table-cell">Bonus</th>
+                              <th scope="col" class="d-none d-md-table-cell">Stocks</th>
+                              <th scope="col" class="d-table-cell d-md-none">Salary</th>
+                            </tr>
+                          </thead>
+                          <tbody class="table-group-divider">
+                            <tr>
+                              <th scope="row">1</th>
+                              <td>Mark</td>
+                              <td>Otto</td>
+                              <td>@mdo</td>
+                              <td>@mdo</td>
+                              <td>@mdo</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                      </div>
+                      <!-- <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function showSalaries(id) {
+        var id = id;
+
+        var xmlhttp = new XMLHttpRequest();    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) { // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.responseText);
+                    $('#companyNameSalary').html(data['name']);
+                    $('#salariesTable').find('tbody').html('');
+                    for (var i = 0; i < data['length']; i++){
+                      var salary = data['salaryList'][i];
+                      $('#salariesTable').find('tbody').append('<tr>\
+                              <th scope="row" class="d-none d-md-table-cell">'+ (i+1) +'</th>\
+                              <td>'+ salary["position"] +'</td>\
+                              <td>'+ salary["country"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["base"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["bonus"] +'</td>\
+                              <td class="d-none d-md-table-cell">'+ salary["stock"] +'</td>\
+                              <td class="d-md-none d-table-cell">Base : '+ salary["base"] + '<br>Bonus : ' + salary["bonus"] + '<br>Stocks : ' + salary["stock"] + '</td>\
+                            </tr>'
+                      );
+                    }
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/getSalary?company_id=" + id, true);
+        xmlhttp.send(); 
+
+    }
+
+
+    function updateTime(id) {
+        var id = id;
+
+        var xmlhttp = new XMLHttpRequest();    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) { // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+                    var data = JSON.parse(xmlhttp.responseText);
+                    console.log(xmlhttp.responseText);
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/updateDatetime?company_id=" + id, true);
+        xmlhttp.send(); 
+    }
+    
+    function removeFromSaved() {
+        var id = document.getElementById('companyID').innerHTML;
+        var row = document.getElementById('rowNo').innerHTML;
+
+        console.log('Delete - row - ' + row + ', id - ' + id);
+
+        var xmlhttp = new XMLHttpRequest();    
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) { // XMLHttpRequest.DONE == 4
+               if (xmlhttp.status == 200) {
+
+                    var data = JSON.parse(xmlhttp.responseText);
+                    console.log(xmlhttp.responseText);
+
+                    if (data['status'] == 'unsaved'){
+                     document.getElementById("myTable").deleteRow(row);
+                    }
+
+                        $('#exampleModal').modal('hide');
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/addSavedCompany?company_id=" + id, true);
+        xmlhttp.send(); 
+    }
+
+    function saveCompany(id, row) {
+        var id = id;
+        var row = $(row).closest('tr').index() + 1;
+        console.log('row - ' + row + ', id - ' + id);
+
+        $('#exampleModal').modal('show');
+
+        var companyName = $(document.getElementById("myTable").rows[row].cells[1].innerHTML).find("strong")[0].outerText;
+        document.getElementById('modelBodyText').innerHTML = companyName;
+
+        document.getElementById('companyID').innerHTML = id;        
+        document.getElementById('rowNo').innerHTML = row;
+    }
+
+</script>
+
+
+
+
+{%endblock%}

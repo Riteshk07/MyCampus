@@ -1,0 +1,26 @@
+{%extends 'main/base.html'%}
+{% block home %}active{% endblock %}
+{%block contant%}
+
+<style type="text/css">
+    body{
+        background: #eee;
+    }
+    .alert{
+        background: #fff;
+    }
+</style>
+
+<div class="container pt-5">
+    <div class="alert alert-light" role="alert">
+        <h1 class="text-center"><strong>{{user.first_name}} {{user.last_name}}</strong></h1>
+    </div>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+
+    <!-- ###################################[ Diary Graph ]####################################### -->
+
+    
+    
+
+</div>
+{%endblock%}

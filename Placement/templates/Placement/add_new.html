@@ -1,0 +1,254 @@
+{%extends 'placement/placement_base.html'%}
+{% block addNew %}active{% endblock %}
+{% block addNew2 %}active{% endblock %}
+{%block contant%}
+<style type="text/css">
+body {
+    background: #EEE;
+}
+</style>
+<div class="container-fluid px-4" style="overflow-y: scroll; height:100%;">
+    <div class="row">
+        <div class="col-12 text-center my-md-4  my-2">
+            <h1><b>Contribute Data</b></h1>
+        </div>
+        <div class="col-md-4">
+        	<div class="alert alert-danger alert-dismissible" role="alert" id="companyAlert">
+			  	Thank You for adding a new Company :)
+			  	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>	
+            <div class="card text-bg-danger mb-3" style="max-width: 100%;">
+                <div class="card-header">
+                    <h3 class="card-title">Add Company</h3>
+                </div>
+                <div class="card-body">
+                    <form id="companyForm" method='post' enctype='multipart/form-data'>  
+                        <div class="mb-3">
+                            <label for="nameForm" class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="nameForm" placeholder="Type here" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descForm" class="form-label">Company Description</label>
+                            <input type="text" class="form-control" id="descForm" placeholder="Type here" name="desc" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="linkForm" class="form-label">Career Page Link</label>
+                            <input type="text" class="form-control" id="linkForm" placeholder="http://career.xyz.com" name="link" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="iconForm" class="form-label">Company Logo URL</label>
+                            <input type="text" class="form-control" id="iconForm" placeholder="http://www.xyz.com/logo.png" name="icon" required>
+                        </div>                        
+                    </form>
+                    {% csrf_token %}
+                    <button type="button" id="companySubmit" class="btn btn-light">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+        	<div id="salaryAlert">
+	        	<div class="alert alert-primary alert-dismissible" role="alert">
+				  	Thank You for adding a Salary :)
+				  	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>	
+        	</div>        	
+            <div class="card text-bg-primary mb-3" style="max-width: 100%;">
+                <div class="card-header">
+                    <h3 class="card-title">Add Salary</h3>
+                </div>
+                <div class="card-body">
+                    <form id="salaryForm" method='post' enctype='multipart/form-data'>  
+                        <div class="mb-3">
+                            <label for="selectionForm" class="form-label">Company</label>
+                            <select class="form-select" aria-label="Default select example" for="selectionForm" name="company_id" required>
+                                <option selected>Open this select menu</option>
+                                {% for company in companies %}
+                                	<option value="{{company.id}}">{{company.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="positionForm" class="form-label">Position</label>
+                            <input type="text" class="form-control" id="positionForm" placeholder="Type here" name="position" list="position" required>
+                            <datalist id="position">
+                                {% for position in positions %}
+                                    <option>{{position}}</option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        <div class="mb-3">
+                            <label for="countryForm" class="form-label">Country</label>
+                            <input type="text" class="form-control" id="countryForm" placeholder="Type here" value="India" name="country" required>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="baseForm" class="form-label">Base</label>
+                                <input type="number" class="form-control" id="baseForm" value="0" name="base" required>
+                            </div>
+                            <div class="col">
+                                <label for="bonusForm" class="form-label">Bonus</label>
+                                <input type="number" class="form-control" id="bonusForm" value="0" name="bonus" required>
+                            </div>
+                            <div class="col">
+                                <label for="stockForm" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="stockForm" value="0" name="stock" required>
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" id="salarySubmit" class="btn btn-light">Submit</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div id="jobAlert">
+	        	<div class="alert alert-warning alert-dismissible" role="alert">
+				  	Thank You for adding a new Position :)
+				  	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>	
+        	</div>  
+
+            <div class="card text-bg-warning mb-3" style="max-width: 100%;">
+                <div class="card-header">
+                    <h3 class="card-title">Add Job</h3>
+                </div>
+                <div class="card-body">
+                    <form id="jobForm" method='post' enctype='multipart/form-data'>  
+                        <div class="mb-3">
+                            <label for="selectionForm" class="form-label">Company</label>
+                            <select class="form-select" aria-label="Default select example" for="selectionForm" name="company_id" required>
+                                <option selected>Open this select menu</option>
+                                {% for company in companies %}
+                                    <option value="{{company.id}}">{{company.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="positionForm" class="form-label">Position</label>
+                            <input type="text" class="form-control" id="positionForm" placeholder="Type here" name="position" list="position" required>
+                            <datalist id="position">
+                                {% for position in positions %}
+                                    <option>{{position}}</option>
+                                {% endfor %}
+                            </datalist>
+                        </div>       
+                        <div class="mb-3">
+                            <label for="linkForm" class="form-label">Job Link</label>
+                            <input type="text" class="form-control" id="linkForm" placeholder="Type here" name="link" required>
+                        </div> 
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="jobIdForm" class="form-label">Job ID</label>
+                                <input type="text" class="form-control" id="jobIdForm" placeholder="Type here" name="job_id" required>
+                            </div>
+                            <div class="col">
+                                <label for="locationForm" class="form-label">Location</label>
+                                <input type="text" class="form-control" id="locationForm" placeholder="Type here" name="location" list="location" required>
+                                <datalist id="location">
+                                    {% for location in locations %}
+                                        <option>{{location}}</option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+                    </form>
+                    <button type="button" id="jobSubmit" class="btn btn-light">Submit</button>     
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("#companyAlert").hide();
+    $("#salaryAlert").hide();
+    $("#jobAlert").hide();
+
+	$('#companySubmit').click(function() {
+	    var xmlhttp = new XMLHttpRequest();    
+		
+		const formData = new FormData($('#companyForm')[0]);
+		const params = new URLSearchParams(formData).toString();
+
+	    xmlhttp.onreadystatechange = function() {
+	        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+	           if (xmlhttp.status == 200) {
+	                $("#companyForm").trigger("reset");
+                    console.log(xmlhttp.responseText);
+                    $("#companyAlert").show();
+                    setTimeout(function() {
+                        $("#companyAlert").hide();
+                    }, 2000);
+	           }
+	           else if (xmlhttp.status == 400) {
+	               alert('There was an error 400');
+	           }
+	           else {
+	               alert('something else other than 200 was returned');
+	           }
+	        }
+	    };
+	    xmlhttp.open("GET", "/placement/addCompany?" + params, true);
+	    xmlhttp.send();
+	});
+
+
+	$('#salarySubmit').click(function() {
+	    var xmlhttp = new XMLHttpRequest();    
+		
+		const formData = new FormData($('#salaryForm')[0]);
+		const params = new URLSearchParams(formData).toString();
+
+	    xmlhttp.onreadystatechange = function() {
+	        if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+	           if (xmlhttp.status == 200) {
+	               $("#salaryForm").trigger("reset");
+	               console.log(xmlhttp.responseText);
+                   $("#salaryAlert").show();
+                    setTimeout(function() {
+                        $("#salaryAlert").hide();
+                    }, 2000);
+	           }
+	           else if (xmlhttp.status == 400) {
+	               alert('There was an error 400');
+	           }
+	           else {
+	               alert('something else other than 200 was returned');
+	           }
+	        }
+	    };
+	    xmlhttp.open("GET", "/placement/addSalary?" + params, true);
+	    xmlhttp.send();
+	});
+
+
+    $('#jobSubmit').click(function() {
+        var xmlhttp = new XMLHttpRequest();  
+        
+        const formData = new FormData($('#jobForm')[0]);
+        const params = new URLSearchParams(formData).toString();
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+               if (xmlhttp.status == 200) {
+                    $("#jobForm").trigger("reset");
+                    console.log(xmlhttp.responseText);                   
+                    $("#jobAlert").show();
+                    setTimeout(function() {
+                        $("#jobAlert").hide();
+                    }, 2000);
+               }
+               else if (xmlhttp.status == 400) {
+                   alert('There was an error 400');
+               }
+               else {
+                   alert('something else other than 200 was returned');
+               }
+            }
+        };
+        xmlhttp.open("GET", "/placement/addJob?" + params, true);
+        xmlhttp.send();
+    });
+
+
+
+</script>
+{%endblock%}
